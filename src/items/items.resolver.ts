@@ -15,13 +15,13 @@ export class ItemsResolver {
   }
 
   @Query(() => [Item], { name: 'items' })
-  findAll() {
-    return this.itemsService.findAll();
+  async findAll(): Promise<Item[]> {
+    return await this.itemsService.findAll();
   }
 
   @Query(() => Item, { name: 'item' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.itemsService.findOne(id);
+  async findOne(@Args('id', { type: () => String }) id: string) : Promise<Item> {
+    return await this.itemsService.findOne(id);
   }
 
   @Mutation(() => Item)
