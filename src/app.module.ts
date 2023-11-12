@@ -7,6 +7,8 @@ import { ItemsModule } from './items/items.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './config/data-source';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -24,6 +26,10 @@ import { dataSourceOptions } from './config/data-source';
     }),
 
     ItemsModule,
+
+    UsersModule,
+
+    AuthModule,
   ],
   controllers: [],
   providers: [],

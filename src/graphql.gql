@@ -9,12 +9,31 @@ type Item {
   quantityUnits: String
 }
 
+type User {
+  """Id Unique for User"""
+  id: ID!
+
+  """FullName for User"""
+  fullName: String!
+
+  """Email for User"""
+  email: String!
+
+  """Roles for User"""
+  roles: [String!]!
+
+  """isActive for User"""
+  isActive: Boolean!
+}
+
 type Query {
   """Find all items"""
   FindAllitems: [Item!]!
 
   """Find One Item by ID using UUID"""
   FindOneItem(id: String!): Item!
+  users: [User!]!
+  user(id: ID!): User!
 }
 
 type Mutation {
@@ -25,6 +44,7 @@ type Mutation {
 
   """Remove Item by ID using UUID"""
   RemoveItem(id: ID!): Item!
+  blockUser(id: Int!): User!
 }
 
 input CreateItemInput {
