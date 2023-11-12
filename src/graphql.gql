@@ -26,6 +26,11 @@ type User {
   isActive: Boolean!
 }
 
+type AuthResponse {
+  token: String!
+  user: User!
+}
+
 type Query {
   """Find all items"""
   FindAllitems: [Item!]!
@@ -45,6 +50,7 @@ type Mutation {
   """Remove Item by ID using UUID"""
   RemoveItem(id: ID!): Item!
   blockUser(id: Int!): User!
+  signup(singUpInput: SignUpInput!): AuthResponse!
 }
 
 input CreateItemInput {
@@ -68,4 +74,15 @@ input UpdateItemInput {
   """Units of Quantity"""
   quantityUnits: String
   id: ID!
+}
+
+input SignUpInput {
+  """Email of user"""
+  email: String!
+
+  """FullName of user"""
+  fullName: String!
+
+  """Password of user"""
+  password: String!
 }
