@@ -11,16 +11,20 @@ type Item {
 
 type Query {
   """Find all items"""
-  items: [Item!]!
+  FindAllitems: [Item!]!
 
   """Find One Item by ID using UUID"""
-  item(id: String!): Item!
+  FindOneItem(id: String!): Item!
 }
 
 type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
-  updateItem(updateItemInput: UpdateItemInput!): Item!
-  removeItem(id: String!): Item!
+
+  """Update Item by ID using UUID"""
+  UpdateItem(updateItemInput: UpdateItemInput!): Item!
+
+  """Remove Item by ID using UUID"""
+  RemoveItem(id: ID!): Item!
 }
 
 input CreateItemInput {

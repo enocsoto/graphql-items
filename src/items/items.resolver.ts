@@ -1,5 +1,5 @@
 import { ParseUUIDPipe } from '@nestjs/common';
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { ItemsService } from './items.service';
 import { Item } from './entities/item.entity';
 import { CreateItemInput, UpdateItemInput } from './dto';
@@ -16,7 +16,7 @@ export class ItemsResolver {
   }
 
   @Query(() => [Item], { 
-    name: 'Find All items',
+    name: 'FindAllitems',
     description: 'Find all items' 
   })
   async findAll(): Promise<Item[]> {
@@ -24,7 +24,7 @@ export class ItemsResolver {
   }
 
   @Query(() => Item, {
-    name: 'Find One item',
+    name: 'FindOneItem',
     description: 'Find One Item by ID using UUID',
   })
   async findOne(
@@ -34,7 +34,7 @@ export class ItemsResolver {
   }
 
   @Mutation(() => Item, {
-    name: 'Update Item',
+    name: 'UpdateItem',
     description: 'Update Item by ID using UUID',
   })
   async updateItem(
@@ -44,7 +44,7 @@ export class ItemsResolver {
   }
 
   @Mutation(() => Item, {
-    name: 'Remove Item',
+    name: 'RemoveItem',
     description: 'Remove Item by ID using UUID',
   })
   async removeItem(
