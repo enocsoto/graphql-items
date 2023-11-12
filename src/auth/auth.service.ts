@@ -4,6 +4,7 @@ import { AuthResponse } from './types/auth-response.type';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -35,6 +36,22 @@ export class AuthService {
     }
     const token = this.getJwtToken(user.id);
 
+    return {
+      token,
+      user,
+    };
+  }
+
+  async validateUser(id: string): Promise<User> {
+    const user = await this.usersService.findOneById(id);
+    if (!user.isActive)
+      throw new BadRequestException(`User is not active, talk whit an admin`);
+    delete user.password;
+    return user;
+  }
+
+  revalidateToken(user: User): AuthResponse {
+    const token = this.getJwtToken(user.id);
     return {
       token,
       user,
