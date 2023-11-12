@@ -10,14 +10,17 @@ type Item {
 }
 
 type Query {
+  """Find all items"""
   items: [Item!]!
+
+  """Find One Item by ID using UUID"""
   item(id: String!): Item!
 }
 
 type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
-  removeItem(id: Int!): Item!
+  removeItem(id: String!): Item!
 }
 
 input CreateItemInput {
@@ -40,5 +43,5 @@ input UpdateItemInput {
 
   """Units of Quantity"""
   quantityUnits: String
-  id: Int!
+  id: ID!
 }

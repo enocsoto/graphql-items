@@ -26,21 +26,35 @@ export class ItemsService {
 
   async findOne(id: string): Promise<Item> {
     try {
-      if (!isUUID(id)) throw new Error(`Invalid id: ${id}`);
       const newItem = await this.itemsRepository.findOneBy({ id });
       if (!newItem)
         throw new NotFoundException(`Item whit id: ${id} not found`);
       return newItem;
     } catch (error) {
-      throw new InternalServerErrorException(`Failed to find item`);
+      throw error;
     }
   }
 
-  update(id: number, updateItemInput: UpdateItemInput) {
-    return `This action updates a #${id} item`;
+  async update(id: string, updateItemInput: UpdateItemInput): Promise<Item> {
+    try {
+      await this.findOne(id);
+      const newItem = await this.itemsRepository.preload(updateItemInput);
+      if (!newItem)
+        throw new NotFoundException(`Item whit id: ${id} not found`);
+      return await this.itemsRepository.save(newItem);
+    } catch (error) {
+      throw error;
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} item`;
+  async remove(id: string) {
+    try {
+      const item = await this.findOne(id);
+      if (!item) throw new NotFoundException(`Item not found: ${id}`);
+      await this.itemsRepository.remove(item);
+      return {...item, id};
+    } catch (error) {
+      throw error;
+    }
   }
 }
