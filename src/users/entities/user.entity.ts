@@ -6,11 +6,13 @@ import {
   IsUUID,
   MinLength,
 } from 'class-validator';
+import { Item } from 'src/items/entities/item.entity';
 import {
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 @Entity({ name: 'users' })
@@ -51,4 +53,7 @@ export class User {
   lastUpdateBy?: User;
 
   //TODO: relationship
+  @OneToMany(() => Item, (item) => item.user, {lazy: true})
+  @Field(() => [Item])
+  items: Item[];
 }

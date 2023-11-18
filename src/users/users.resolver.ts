@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, ID, ResolveField, Parent } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { ValidrRolesArgs } from './dto/args/roles.arg';
@@ -7,11 +7,15 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { ValidRoles } from '../auth/enums/valid-roles.enums';
 import { UpdateUserInput } from './dto/update-user.input';
+import { ItemsService } from 'src/items/items.service';
 
 @Resolver(() => User)
 @UseGuards(JwtAuthGuard)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly itemsService: ItemsService
+    ) {}
 
   @Query(() => [User], { name: 'users' })
   findAll(
@@ -44,5 +48,15 @@ export class UsersResolver {
     
     ): Promise<User> {
     return this.usersService.block(id, user);
+  }
+
+  @ResolveField(() => Int, {name: 'itemCount', description:'Number of items'})
+  async itemCount(
+  @Parent() user: User,
+  @CurrentUser([ValidRoles.admin], ParseUUIDPipe) adminUser: User, 
+  //el decorador aplica las reglas de validacion de rol no es necesario pasarlo al servicio
+
+  ): Promise<number> {
+    return this.itemsService.itemCountByUser(user)
   }
 }
