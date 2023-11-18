@@ -10,7 +10,6 @@ import { dataSourceOptions } from './config/data-source';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 
-
 @Module({
   imports: [
     TypeOrmModule.forRoot({ ...dataSourceOptions }),
@@ -23,8 +22,13 @@ import { AuthModule } from './auth/auth.module';
       playground: false,
       autoSchemaFile: join(process.cwd(), 'src/graphql.gql'),
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+    //   context({ req }) {
+    //     const token = req.headders.authorization?.replace('Bearer ', '');
+    //     if (!token) throw new Error(`Invalid authorization needed Token`);
+    //     const payload = jwtService.decode(token);
+    //     if (!payload) throw Error(`Token not valid`);
+    //   },
     }),
-
     ItemsModule,
 
     UsersModule,
