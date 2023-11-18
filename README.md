@@ -8,11 +8,15 @@
 
 ## Description
 
-[GitHub](https://github.com/enocsoto/graphql) TypeScript starter repository.
+[GitHub](https://github.com/enocsoto/graphql) GraphQl Nestjs Create Items and Users, whit relations and Seed.
 
-## Installation
+## Step by Step
 
 ```bash
+$ clone repository
+
+$ Copy the env.template and rename for .env
+
 $ yarn install
 ```
 
@@ -20,7 +24,7 @@ $ yarn install
 
 ```bash
 # development
-$ docker compose up -d && yarn run start
+$ docker compose up -d && yarn run start:dev
 
 # watch mode
 $ yarn run start:dev
@@ -41,6 +45,10 @@ $ yarn run test:e2e
 # test coverage
 $ yarn run test:cov
 ```
+
+## Execute Seed
+
+Execute the Query Mutation executeSeed.
 
 ## Stay in touch
 

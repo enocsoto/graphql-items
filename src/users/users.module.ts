@@ -11,7 +11,8 @@ import { ItemsModule } from 'src/items/items.module';
   imports: [TypeOrmModule.forFeature([User]), ItemsModule],
   providers: [UsersResolver, UsersService, AuthService, JwtService],
   exports: [
-    // TypeOrmModule,
-    UsersService]
+    TypeOrmModule, 
+    UsersService
+  ],
 })
 export class UsersModule {}
