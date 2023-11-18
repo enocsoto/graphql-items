@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from './config/data-source';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -17,18 +18,34 @@ import { AuthModule } from './auth/auth.module';
       envFilePath: `.${process.env.NODE_ENV}.env`,
       isGlobal: true,
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+
+    ConfigModule.forRoot(),
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: false,
-      autoSchemaFile: join(process.cwd(), 'src/graphql.gql'),
-      plugins: [ApolloServerPluginLandingPageLocalDefault()],
-    //   context({ req }) {
-    //     const token = req.headders.authorization?.replace('Bearer ', '');
-    //     if (!token) throw new Error(`Invalid authorization needed Token`);
-    //     const payload = jwtService.decode(token);
-    //     if (!payload) throw Error(`Token not valid`);
-    //   },
+      imports: [AuthModule],
+      inject: [JwtService],
+      useFactory: async (jwtService: JwtService) => ({
+        playground: false,
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        plugins: [ApolloServerPluginLandingPageLocalDefault()],
+        context({ req }) {
+          const token = req.headders.authorization?.replace('Bearer ', '');
+          if (!token) throw new Error(`Invalid authorization needed Token`);
+          const payload = jwtService.decode(token);
+          if (!payload) throw Error(`Token not valid`);
+        },
+      }),
+      
     }),
+
+    //TODO: CONFIGURACION SINCRONICA
+    // GraphQLModule.forRoot<ApolloDriverConfig>({
+    //   driver: ApolloDriver,
+    //   playground: false,
+    //   autoSchemaFile: join(process.cwd(), 'src/graphql.gql'),
+    //   plugins: [ApolloServerPluginLandingPageLocalDefault()],
+//  }),
+
     ItemsModule,
 
     UsersModule,
