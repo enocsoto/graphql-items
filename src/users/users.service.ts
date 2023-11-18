@@ -16,10 +16,12 @@ import { ValidRoles } from '../auth/enums/valid-roles.enums';
 @Injectable()
 export class UsersService {
   private logger = new Logger('UserService');
+
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
   ) {}
+
   async create(signUpInput: SignUpInput): Promise<User> {
     try {
       const newUser = this.usersRepository.create({
@@ -34,10 +36,11 @@ export class UsersService {
 
   async findAll(roles: ValidRoles[]): Promise<User[]> {
     if (roles.length === 0) return this.usersRepository.find();
-    return this.usersRepository.createQueryBuilder()
-    .andWhere('ARRAY[roles] && ARRAY[:...roles]')
-    .setParameter('roles', roles)
-    .getMany();
+    return this.usersRepository
+      .createQueryBuilder()
+      .andWhere('ARRAY[roles] && ARRAY[:...roles]')
+      .setParameter('roles', roles)
+      .getMany();
   }
 
   async findOneByEmail(email: string): Promise<User> {
@@ -56,17 +59,25 @@ export class UsersService {
     }
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async update(
+    id: string,
+    updateUserInput: UpdateUserInput,
+    updateBy: User,
+  ): Promise<User> {
+    try {
+      const user = await this.usersRepository.preload({...updateUserInput, id});
+      user.lastUpdateBy = updateBy;
+      return await this.usersRepository.save(user);
+    } catch (error) {
+      this.handleDBErrors(error);
+    }
   }
 
   async block(id: string, adminUser: User): Promise<User> {
-    const userToBlock = await this.usersRepository.findOneBy({id});
+    const userToBlock = await this.usersRepository.findOneBy({ id });
     userToBlock.isActive = false;
     userToBlock.lastUpdateBy = adminUser;
     return await this.usersRepository.save(userToBlock);
-
-
   }
 
   private handleDBErrors(errors: any): never {
