@@ -60,8 +60,13 @@ export class UsersService {
     return `This action updates a #${id} user`;
   }
 
-  block(id: string): Promise<User> {
-    throw new Error(`Block Method not implemented`);
+  async block(id: string, adminUser: User): Promise<User> {
+    const userToBlock = await this.usersRepository.findOneBy({id});
+    userToBlock.isActive = false;
+    userToBlock.lastUpdateBy = adminUser;
+    return await this.usersRepository.save(userToBlock);
+
+
   }
 
   private handleDBErrors(errors: any): never {
